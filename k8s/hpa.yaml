@@ -1,0 +1,21 @@
+# Scales the w40k-rag Deployment between 1 and 5 pods on CPU.
+# Needs metrics-server; without it TARGETS shows <unknown>.
+# Container Apps equivalent: KEDA HTTP scale rule (concurrency 5, min 1, max 5).
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: w40k-rag
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: w40k-rag
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70   # % of the pod's CPU request (250m)

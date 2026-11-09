@@ -1,0 +1,13 @@
+# Exposes the w40k-rag pods on port 80 (Docker Desktop maps LoadBalancer to localhost).
+# Container Apps equivalent: external ingress + FQDN.
+apiVersion: v1
+kind: Service
+metadata:
+  name: w40k-rag
+spec:
+  type: LoadBalancer
+  selector:
+    app: w40k-rag        # must match the pod labels in deployment.yaml
+  ports:
+    - port: 80           # port clients hit
+      targetPort: 8000   # port uvicorn listens on inside the container

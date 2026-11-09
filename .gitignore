@@ -1,0 +1,9 @@
+.env
+.env.*
+__pycache__/
+*.pyc
+.venv/
+mlflow.db
+mlruns/
+*.zip
+CloudProject_Demo-RAG.pdf

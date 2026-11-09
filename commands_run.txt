@@ -1,0 +1,42 @@
+Data 789
+Setup
+winget install Microsoft.AzureCLI
+az login
+az account show -o table
+az extension add --name containerapp --upgrade
+
+#Local Runs
+python -m pip install -r requirements.txt
+python -m uvicorn app:app --reload
+# test at http://localhost:8000/docs
+
+Docker Build
+docker build -t w40k-rag .
+docker run --rm -p 8000:8000 --env-file ..\.env w40k-rag
+# test at http://localhost:8000/docs
+
+Azure Container Apps
+az containerapp up -n w40k-rag -g rg-data790-w40k -l eastus --source . --ingress external --target-port 8000
+
+Secrets
+az containerapp secret set -n w40k-rag -g rg-data790-w40k --secrets <ai-key>=<value> <pinecone-key>=<value>
+az containerapp update -n w40k-rag -g rg-data790-w40k --set-env-vars UNC_AI_API_KEY=secretref:<ai-key> UNC_PINECONE_API_KEY=secretref:<pinecone-key>
+
+Health and restart
+az containerapp revision list -n w40k-rag -g rg-data790-w40k -o table
+az containerapp revision restart -n w40k-rag -g rg-data790-w40k --revision <revision-name>
+az containerapp show -n w40k-rag -g rg-data790-w40k --query properties.configuration.ingress.fqdn
+
+Autoscaling
+az containerapp update -n w40k-rag -g rg-data790-w40k --min-replicas 1 --max-replicas 5 --scale-rule-name http-rule --scale-rule-type http --scale-rule-http-concurrency 5
+az containerapp show -n w40k-rag -g rg-data790-w40k --query properties.template.scale
+
+Load test + Monitoring
+python load_test.py
+az containerapp replica list -n w40k-rag -g rg-data790-w40k -o table
+
+
+
+Cleanup (after grading)
+az containerapp update -n w40k-rag -g rg-data790-w40k --min-replicas 0
+az group delete -n rg-data790-w40k --yes

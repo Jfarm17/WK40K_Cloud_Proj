@@ -1,0 +1,13 @@
+# Secrets never go in the image -- keys come from --env-file locally and Azure secrets in the cloud
+.env
+.env.*
+
+# Python build junk
+__pycache__/
+*.pyc
+.venv/
+
+# Local leftovers the server doesn't need
+result/
+.ipynb_checkpoints/
+*.ipynb

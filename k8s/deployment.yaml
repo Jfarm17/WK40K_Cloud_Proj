@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: w40k-rag
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: w40k-rag}
+  template:
+    metadata:
+      labels: {app: w40k-rag}
+    spec:
+      containers:
+        - name: w40k-rag
+          image: w40k-rag
+          imagePullPolicy: Never        # use the local image, don't pull from a registry
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef: {name: w40k-secrets}
+          readinessProbe:
+            httpGet: {path: /health, port: 8000}
+          resources:
+            requests: {cpu: 250m, memory: 512Mi}
+            limits:   {cpu: 500m, memory: 1Gi}
