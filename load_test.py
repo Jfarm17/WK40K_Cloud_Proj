@@ -4,6 +4,12 @@ import requests
 import mlflow
 from concurrent.futures import ThreadPoolExecutor
 from collections import Counter
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv("../.env")
+HEADERS = {"X-API-Key": os.environ["APP_API_KEY"]}
 
 URL = "https://w40k-rag.victorioushill-f2ce5271.eastus.azurecontainerapps.io/ask"
 QUESTION = {"question": "Can my unit shoot after it advances?"}
@@ -12,7 +18,7 @@ QUESTION = {"question": "Can my unit shoot after it advances?"}
 def hit(_):
     start = time.perf_counter()
     try:
-        status = requests.post(URL, json=QUESTION, timeout=180).status_code
+        status = requests.post(URL, json=QUESTION, headers=HEADERS, timeout=180).status_code
     except requests.RequestException as e:
         status = type(e).__name__
     return status, time.perf_counter() - start

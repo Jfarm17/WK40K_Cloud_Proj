@@ -351,9 +351,13 @@ class Ask(BaseModel):
 def health():
     return {"ok": True}
 
+from fastapi import Header, HTTPException
+APP_API_KEY = os.getenv("APP_API_KEY")
 
 @app.post("/ask")
-def ask(body: Ask):
+def ask(body: Ask, x_api_key: str | None = Header(None)):
+    if not APP_API_KEY or x_api_key != APP_API_KEY:
+        raise HTTPException(401, "Missing or wrong X-API-Key Header")
     try:
         result = demo_rag(body.question)
     except BadRequestError as err:   #gateway content filter rejected the generate call
