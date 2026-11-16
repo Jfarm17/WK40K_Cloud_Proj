@@ -4,6 +4,8 @@ DATA 790 Cloud Deployment Project · Joshua Farmer
 
 My Milestone 2 security-hardened RAG assistant ([Student_Warhammer_Milestone2](https://github.com/Jfarm17/Student_Warhammer_Milestone2)), served with FastAPI and deployed as a container to **Azure Container Apps** with HTTP autoscaling. It is monitored with **Azure Monitor** and **MLflow**, and also runs on **Kubernetes**.
 
+Now requires a key to access /ask
+
 **Live API:** https://w40k-rag.victorioushill-f2ce5271.eastus.azurecontainerapps.io/docs
 
 ![Architecture](architecture.png)
